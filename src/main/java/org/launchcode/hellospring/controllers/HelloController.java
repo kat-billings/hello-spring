@@ -1,12 +1,14 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.PortUnreachableException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-@ResponseBody
 //@RequestMapping("hello")
 public class HelloController {
 
@@ -19,35 +21,33 @@ public class HelloController {
 
     //Handle requests at path /goodbye
     @GetMapping("goodbye")
+    @ResponseBody
     public String goodbye(){
         return "Goodbye, Spring!";
     }
 
     //Handle requests of the form /hello?name=LaunchCode
     @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, value="hello")
-    public String helloWithQueryParam(@RequestParam String name){
-        return "Hello, " + name + "!";
+    public String helloWithQueryParam(@RequestParam String name, Model model){
+        String greeting = "Hello, " + name + "!";
+        model.addAttribute("greeting", greeting);
+        return "hello";
     }
 
     //Handle requests of the form /hello/LaunchCode
     @GetMapping("hello/{name}")
-    public String helloWithPathParam(@PathVariable String name){
-        return "Hello, " + name + "!";
+    public String helloWithPathParam(@PathVariable String name, Model model){
+        model.addAttribute("greeting", "Hello, " + name + "!");
+        return "hello";
     }
 
     @GetMapping("form")
     public String helloForm(){
-        return "<html>" +
-                "<body>" +
-                "<form method='post' action = '/hello'>" +
-                "<input type='text' name='name'>" +
-                "<input type='submit' value='Greet me!'/>" +
-                "</form>" +
-                "</body>" +
-                "</html>";
+        return "form";
     }
 
     @GetMapping("lang")
+    @ResponseBody
     public String langForm(){
         return "<html>" +
                 "<body>" +
@@ -67,6 +67,7 @@ public class HelloController {
     }
 
     //Handle requests of the form /hello?name=LaunchCode
+    @ResponseBody
     @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, value="languages")
     public String createMessage(@RequestParam String name, @RequestParam String language){
         if(name.isEmpty()){
@@ -85,6 +86,17 @@ public class HelloController {
             return "Hello, " + name + "!";
         }
 
+    }
+
+    @GetMapping("hello-names")
+    public String helloNames(Model model){
+        List<String> names = new ArrayList<>();
+        names.add("Rai");
+        names.add("Val");
+        names.add("Hue");
+        names.add("Al");
+        model.addAttribute("names",names);
+        return "hello-list";
     }
 
 
