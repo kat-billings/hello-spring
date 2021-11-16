@@ -3,9 +3,11 @@ package org.launchcode.hellospring.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.PortUnreachableException;
+
 @Controller
 @ResponseBody
-@RequestMapping("hello")
+//@RequestMapping("hello")
 public class HelloController {
 
 //    //Handle requests at path /hello
@@ -22,13 +24,13 @@ public class HelloController {
     }
 
     //Handle requests of the form /hello?name=LaunchCode
-    @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, value="hello")
     public String helloWithQueryParam(@RequestParam String name){
         return "Hello, " + name + "!";
     }
 
     //Handle requests of the form /hello/LaunchCode
-    @GetMapping("{name}")
+    @GetMapping("hello/{name}")
     public String helloWithPathParam(@PathVariable String name){
         return "Hello, " + name + "!";
     }
@@ -37,11 +39,54 @@ public class HelloController {
     public String helloForm(){
         return "<html>" +
                 "<body>" +
-                "<form action='hello' method='post'>" +
+                "<form method='post' action = '/hello'>" +
                 "<input type='text' name='name'>" +
-                "<input type='submit' value='Greet me!'>" +
+                "<input type='submit' value='Greet me!'/>" +
                 "</form>" +
                 "</body>" +
                 "</html>";
     }
+
+    @GetMapping("lang")
+    public String langForm(){
+        return "<html>" +
+                "<body>" +
+                "<form action='/languages' method='get'>" +
+                "<input type='text' name='name'>" +
+                "<select name='language'>" +
+                "<option value='English'>English</option>" +
+                "<option value='French'>French</option>" +
+                "<option value='Spanish'>Spanish</option>" +
+                "<option value='German'>German</option>" +
+                "<option value='Esperanto'>Esperanto</option>" +
+                "</select>" +
+                "<input type='submit' value='Greet me!'/>" +
+                "</form>" +
+                "</body>" +
+                "</html>";
+    }
+
+    //Handle requests of the form /hello?name=LaunchCode
+    @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, value="languages")
+    public String createMessage(@RequestParam String name, @RequestParam String language){
+        if(name.isEmpty()){
+            name = "world";
+        }
+
+        if(language.equals("French")){
+            return "Salut, " + name + "!";
+        } else if(language.equals("Spanish")){
+            return "¡Hola, " + name + "!";
+        } else if(language.equals("German")){
+            return "Hallo, " + name + "!";
+        } else if(language.equals("Esperanto")){
+            return "Saluton, " + name + "!";
+        } else{
+            return "Hello, " + name + "!";
+        }
+
+    }
+
+
 }
+
